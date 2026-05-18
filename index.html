@@ -47,7 +47,7 @@
     width: 300px;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.2s, border-color 0.2s;
+    transition: transform 0.2s, border-color 0.2s, opacity 0.2s;
   }
   .card:hover {
     transform: translateY(-4px);
@@ -76,6 +76,61 @@
     font-size: 1.2rem;
     color: #C8102E;
   }
+
+  /* ACTIVO — ciclo en curso */
+  .card.active {
+    border-top-color: #e8b84b;
+    background: #1a1800;
+    border-color: rgba(232,184,75,0.2);
+  }
+  .card.active .tag { color: #e8b84b; }
+  .card.active .arrow { color: #e8b84b; }
+  .card.active:hover { border-color: #e8b84b; background: #1e1c00; }
+  .badge {
+    display: inline-block;
+    font-size: 0.48rem;
+    letter-spacing: 2px;
+    background: #C8102E;
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-left: 8px;
+    font-family: sans-serif;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    max-width: 800px;
+    margin: 40px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .divider span {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #333;
+    white-space: nowrap;
+  }
+  .divider hr { flex: 1; border: none; border-top: 1px solid #1e1e1e; }
+
+  /* CARD SECUNDARIA */
+  .card.secondary {
+    border-top-color: #2a2a2a;
+    background: #161616;
+    width: 260px;
+    padding: 24px 22px;
+    opacity: 0.6;
+  }
+  .card.secondary .tag { color: #444; }
+  .card.secondary h2 { font-size: 1rem; color: #888; }
+  .card.secondary p { font-size: 0.75rem; }
+  .card.secondary .arrow { color: #444; margin-top: 14px; font-size: 1rem; }
+  .card.secondary:hover { opacity: 1; border-top-color: #555; border-color: #333; }
+
   footer {
     margin-top: 60px;
     font-size: 0.6rem;
@@ -88,20 +143,37 @@
 <body>
   <div class="logo">Legalité</div>
   <h1>Reportes & Planes</h1>
+
   <div class="cards">
-    <a class="card" href="reporte-taller-abril.html">
-      <div class="tag">Dashboard</div>
-      <h2>Reporte Taller Abril 2025</h2>
-      <p>Métricas, funnel de ventas, performance de canales y conversión a Legalité+.</p>
+    <a class="card active" href="reporte-taller-mayo.html">
+      <div class="tag">Dashboard <span class="badge">EN CURSO</span></div>
+      <h2>Reporte Taller Mayo 2026</h2>
+      <p>Cómo Redactar la Demanda Subjetiva · Métricas, funnel, canales y conversión L+.</p>
       <div class="arrow">→</div>
     </a>
     <a class="card" href="ciclo-taller-mayo.html">
-      <div class="tag">Plan de Acción</div>
+      <div class="tag">Ciclo · Semana actual</div>
       <h2>Ciclo Taller Mayo 2026</h2>
       <p>Timeline de ejecución: antes, durante y después del taller virtual.</p>
       <div class="arrow">→</div>
     </a>
   </div>
+
+  <div class="divider">
+    <hr>
+    <span>Archivos anteriores</span>
+    <hr>
+  </div>
+
+  <div class="cards">
+    <a class="card secondary" href="reporte-taller-abril.html">
+      <div class="tag">Dashboard · Cerrado</div>
+      <h2>Reporte Taller Abril 2025</h2>
+      <p>Métricas finales: 461 leads · 154 ventas · 10 L+.</p>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+
   <footer>Uso interno · Legalité</footer>
 </body>
 </html>
