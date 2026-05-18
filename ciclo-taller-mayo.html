@@ -422,6 +422,31 @@
   .phase-divider .pd-despues{ background: var(--gris-mid); color: var(--blanco); border:1px solid #444; }
   .phase-divider hr { flex:1; border:none; border-top: 1px solid #2a2a2a; }
 
+  /* CURRENT WEEK HIGHLIGHT */
+  .week-accordion.current > summary .week-label {
+    border-color: var(--acento);
+  }
+  .week-accordion.current > summary .wl-num {
+    color: var(--acento);
+  }
+  .now-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    background: var(--acento);
+    color: var(--negro);
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .week-accordion.current {
+    border: 1px solid rgba(232,184,75,0.25);
+    border-radius: 4px;
+    padding: 0 10px;
+    background: rgba(232,184,75,0.03);
+  }
+
   /* LEGEND */
   footer {
     margin-top: 48px;
@@ -441,7 +466,7 @@
 
 <header>
   <h1>CICLO DEL <em>TALLER</em> VIRTUAL</h1>
-  <p>Legalité · Mayo 2026 · Protocolo de ejecución</p>
+  <p>Legalité · Mayo 2026 · Cómo Redactar la Demanda Subjetiva o de Plena Jurisdicción · 80 inscritos</p>
 </header>
 
 <!-- OVERVIEW HORIZONTAL -->
@@ -475,8 +500,8 @@
       <span class="ov-week">SEM 5 · MAY 17</span>
     </div>
     <div class="ov-milestones">
-      <div class="ov-m highlight"><div class="ov-m-dot" style="background:var(--acento)"></div>Sesión 1 — Mar 19 mayo · 18h30</div>
-      <div class="ov-m highlight"><div class="ov-m-dot" style="background:var(--acento)"></div>Sesión 2 — Jue 21 mayo · 18h30</div>
+      <div class="ov-m highlight"><div class="ov-m-dot" style="background:var(--acento)"></div>Sesión 1 — Mar 20 mayo · 18h00</div>
+      <div class="ov-m highlight"><div class="ov-m-dot" style="background:var(--acento)"></div>Sesión 2 — Jue 21 mayo · 18h00</div>
       <div class="ov-m"><div class="ov-m-dot" style="background:#5b8fe8"></div>Materiales en Circle + WhatsApp</div>
       <div class="ov-m"><div class="ov-m-dot" style="background:var(--rojo)"></div>Micro campaña post sesión 1</div>
     </div>
@@ -503,8 +528,8 @@
 
 <div class="timeline">
 
-  <!-- SEMANA 1 — abierta por defecto -->
-  <details class="week-accordion" open>
+  <!-- SEMANA 1 -->
+  <details class="week-accordion">
     <summary class="week-label">
       <span class="wl-left">
         <span class="wl-arrow">▾</span>
@@ -834,14 +859,15 @@
     </div>
   </details>
 
-  <!-- SEMANA 5 -->
-  <details class="week-accordion">
+  <!-- SEMANA 5 — SEMANA ACTUAL -->
+  <details class="week-accordion current" open>
     <summary class="week-label">
       <span class="wl-left">
-        <span class="wl-arrow">▸</span>
+        <span class="wl-arrow">▾</span>
         <span class="wl-num">Semana 5</span>
         <span class="wl-date">May 17 – 21</span>
       </span>
+      <span class="now-badge">HOY</span>
       <span class="phase-tag pt-durante">Durante</span>
     </summary>
     <div class="week-body">
@@ -857,17 +883,34 @@
       </div>
 
       <div class="event key">
-        <div class="event-date"><span class="day">Mar 19</span><span class="dow">May</span></div>
+        <div class="event-date"><span class="day">Lun 18</span><span class="dow">May</span></div>
+        <div class="event-dot c-ventas"></div>
+        <div class="event-card b-ventas">
+          <div class="tag">Hoy · Último llamado</div>
+          <div class="title">Email último llamado — Brevo + push Kommo</div>
+          <div class="sub">Comunicar a inscritos cambio de fecha: clases pasan a Mar 20 y Jue 21 · Verificar copy ads Meta/TikTok con fechas correctas (Sandra)</div>
+          <div class="items">
+            <span class="chip">Email Brevo</span>
+            <span class="chip">Push Kommo · Sahian</span>
+            <span class="chip">WhatsApp inscritos</span>
+            <span class="chip">Verificar ads Meta/TikTok</span>
+            <span class="chip">Contenido orgánico RRSS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event key">
+        <div class="event-date"><span class="day">Mar 20</span><span class="dow">May</span></div>
         <div class="event-dot c-evento"></div>
         <div class="event-card b-evento">
           <div class="tag">Sesión 1</div>
-          <div class="title">🎓 Taller en vivo — Zoom · 18h30</div>
-          <div class="sub">Workbook + materiales disponibles en Circle y grupos WhatsApp</div>
+          <div class="title">🎓 Taller en vivo — Zoom · 18h00</div>
+          <div class="sub">Estructura de la demanda, pretensiones, medidas cautelares · Materiales en Circle y WhatsApp post-sesión</div>
         </div>
       </div>
 
       <div class="event">
-        <div class="event-date"><span class="day">Mar 19</span><span class="dow">May</span></div>
+        <div class="event-date"><span class="day">Mar 20</span><span class="dow">May</span></div>
         <div class="event-dot c-ventas"></div>
         <div class="event-card b-ventas">
           <div class="tag">Ventas — Kommo</div>
@@ -881,7 +924,8 @@
         <div class="event-dot c-evento"></div>
         <div class="event-card b-evento">
           <div class="tag">Sesión 2 — Cierre</div>
-          <div class="title">🎓 Taller en vivo — Zoom · 18h30</div>
+          <div class="title">🎓 Taller en vivo — Zoom · 18h00</div>
+          <div class="sub">Práctica de prueba y actuación en audiencias · Clip/foto al finalizar para RRSS</div>
         </div>
       </div>
 
