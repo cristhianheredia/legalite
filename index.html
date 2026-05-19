@@ -99,6 +99,16 @@
     font-family: sans-serif;
   }
 
+  /* TOOL */
+  .card.tool {
+    border-top-color: #4f46e5;
+    background: #0e0e1a;
+    border-color: rgba(79,70,229,0.2);
+  }
+  .card.tool .tag { color: #818cf8; }
+  .card.tool .arrow { color: #4f46e5; }
+  .card.tool:hover { border-color: #4f46e5; background: #11112a; }
+
   /* DIVIDER */
   .divider {
     width: 100%;
@@ -155,6 +165,21 @@
       <div class="tag">Ciclo · Semana actual</div>
       <h2>Ciclo Taller Mayo 2026</h2>
       <p>Timeline de ejecución: antes, durante y después del taller virtual.</p>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+
+  <div class="divider">
+    <hr>
+    <span>Herramientas</span>
+    <hr>
+  </div>
+
+  <div class="cards">
+    <a class="card tool" href="tools/diplomas/">
+      <div class="tag">Herramienta</div>
+      <h2>DiplomasGen</h2>
+      <p>Generador de certificados PDF en lote. Sube plantilla, posiciona campos, carga lista CSV y descarga el ZIP.</p>
       <div class="arrow">→</div>
     </a>
   </div>
