@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CycleTemplate {
+  id        String   @id @default(cuid())
+  version   Int
+  createdAt DateTime @default(now())
+  tasks     Task[]
+  retros    Retro[]
+}
+
+model Task {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @default("")
+  phase       Phase
+  owners      String[]
+  weight      Weight        @default(MEDIUM)
+  order       Int
+  archived    Boolean       @default(false)
+  templateId  String
+  template    CycleTemplate @relation(fields: [templateId], references: [id])
+  retroItems  RetroItem[]
+}
+
+model Retro {
+  id         String          @id @default(cuid())
+  name       String
+  cycleDate  DateTime
+  status     RetroStatus     @default(OPEN)
+  createdAt  DateTime        @default(now())
+  closedAt   DateTime?
+  templateId String
+  template   CycleTemplate   @relation(fields: [templateId], references: [id])
+  items      RetroItem[]
+  sessions   PersonSession[]
+}
+
+model RetroItem {
+  id            String     @id @default(cuid())
+  retroId       String
+  retro         Retro      @relation(fields: [retroId], references: [id])
+  taskId        String
+  task          Task       @relation(fields: [taskId], references: [id])
+  person        String
+  status        ItemStatus?
+  effectiveness Int?
+  note          String?
+  updatedAt     DateTime   @updatedAt
+
+  @@unique([retroId, taskId, person])
+}
+
+model PersonSession {
+  id          String   @id @default(cuid())
+  retroId     String
+  retro       Retro    @relation(fields: [retroId], references: [id])
+  person      String
+  completedAt DateTime @default(now())
+
+  @@unique([retroId, person])
+}
+
+enum Phase {
+  PREP
+  WARM
+  CLOSE
+  EXEC
+  POST
+}
+
+enum Weight {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum RetroStatus {
+  OPEN
+  CLOSED
+}
+
+enum ItemStatus {
+  DONE
+  NOT_DONE
+  NA
+}
