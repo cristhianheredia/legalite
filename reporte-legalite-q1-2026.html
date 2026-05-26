@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legalité+ · Reporte Mar–May 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222536;
+    --border: #2e3248;
+    --accent: #7c6af7;
+    --accent2: #5eead4;
+    --accent3: #f59e0b;
+    --accent4: #f472b6;
+    --text: #e2e8f0;
+    --text-muted: #8892aa;
+    --text-faint: #4a5568;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff;
+  }
+  .header-title { font-size: 15px; font-weight: 600; }
+  .header-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .header-badge {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Tabs */
+  .tabs-bar {
+    display: flex;
+    gap: 2px;
+    padding: 12px 32px 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 69px;
+    z-index: 99;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px 10px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-badge {
+    background: var(--surface2);
+    border-radius: 20px;
+    padding: 1px 7px;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .tab-badge.pending {
+    background: rgba(251,191,36,0.12);
+    color: var(--yellow);
+    border: 1px solid rgba(251,191,36,0.2);
+  }
+
+  /* Content */
+  .tab-panel { display: none; padding: 32px; max-width: 1100px; margin: 0 auto; }
+  .tab-panel.active { display: block; }
+
+  /* Grid layouts */
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin-bottom: 24px; }
+  .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 24px; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .card-h { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .card-h .card-title { margin-bottom: 0; }
+
+  /* KPI cards */
+  .kpi { display: flex; flex-direction: column; justify-content: space-between; min-height: 90px; }
+  .kpi-value { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 4px; }
+  .kpi-label { font-size: 12px; color: var(--text-muted); }
+  .kpi-sub { font-size: 11px; color: var(--text-faint); margin-top: 6px; }
+  .kpi-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+  /* Section title */
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    margin-top: 28px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  /* Chart containers */
+  .chart-wrap { position: relative; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid var(--border); }
+  th { text-align: left; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; }
+  td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid rgba(46,50,72,0.5); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .td-muted { color: var(--text-muted); }
+  .td-mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .badge-green { background: rgba(52,211,153,0.12); color: var(--green); }
+  .badge-yellow { background: rgba(251,191,36,0.12); color: var(--yellow); }
+  .badge-red { background: rgba(248,113,113,0.12); color: var(--red); }
+  .badge-purple { background: rgba(124,106,247,0.12); color: var(--accent); }
+  .badge-teal { background: rgba(94,234,212,0.12); color: var(--accent2); }
+  .badge-gray { background: var(--surface2); color: var(--text-muted); }
+
+  /* Insight cards */
+  .insight {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+  }
+  .insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .insight-text { font-size: 13px; line-height: 1.55; }
+  .insight-text strong { color: var(--text); font-weight: 600; }
+
+  /* Progress bar */
+  .prog-wrap { margin-bottom: 12px; }
+  .prog-label { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
+  .prog-label span:last-child { color: var(--text-muted); }
+  .prog-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 3px; }
+
+  /* Funnel placeholder */
+  .funnel-pending {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 48px 32px;
+    text-align: center;
+  }
+  .funnel-icon { font-size: 40px; margin-bottom: 16px; }
+  .funnel-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .funnel-sub { color: var(--text-muted); font-size: 13px; max-width: 480px; margin: 0 auto 24px; line-height: 1.6; }
+  .funnel-gaps { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; max-width: 560px; margin: 0 auto; }
+  .funnel-gap-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    text-align: left;
+  }
+  .funnel-gap-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 4px; }
+  .funnel-gap-desc { font-size: 12px; color: var(--text-muted); }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* Stat row */
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(46,50,72,0.4); }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row-label { font-size: 13px; color: var(--text-muted); }
+  .stat-row-value { font-size: 13px; font-weight: 600; }
+
+  /* Color helpers */
+  .c-accent { color: var(--accent); }
+  .c-teal { color: var(--accent2); }
+  .c-yellow { color: var(--yellow); }
+  .c-green { color: var(--green); }
+  .c-red { color: var(--red); }
+  .c-muted { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">L+</div>
+    <div>
+      <div class="header-title">Legalité+ · Dashboard Mar–May 2026</div>
+      <div class="header-sub">Inscripciones · Meta Ads · Membresía</div>
+    </div>
+  </div>
+  <div class="header-badge">Actualizado 25 mayo 2026</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">
+    <span>📊</span> Overview
+  </button>
+  <button class="tab-btn" onclick="showTab('inscripciones', this)">
+    <span>👥</span> Inscripciones
+    <span class="tab-badge">368</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('ads', this)">
+    <span>📣</span> Meta Ads
+    <span class="tab-badge">$358</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('funnels', this)">
+    <span>🔄</span> Funnels
+  </button>
+</div>
+
+<!-- =================== OVERVIEW =================== -->
+<div id="tab-overview" class="tab-panel active">
+
+  <div class="grid-4">
+    <div class="card kpi">
+      <div>
+        <div class="kpi-value c-accent">368</div>
+        <div class="kpi-label">Inscripciones totales</div>
+      </div>
+      <div class="kpi-sub">Marzo 109 · Abril 139 · Mayo 120</div>
+    </div>
+    <div class="card kpi">
+      <div>
+        <div class="kpi-value" style="color:var(--accent2)">200+</div>
+        <div class="kpi-label">Participantes únicos</div>
+      </div>
+      <div class="kpi-sub">48 en 2 o más talleres (24%)</div>
+    </div>
+    <div class="card kpi">
+      <div>
+        <div class="kpi-value c-green">16</div>
+        <div class="kpi-label">Miembros LP activos</div>
+      </div>
+      <div class="kpi-sub">33% retención · 49 histórico total</div>
+    </div>
+    <div class="card kpi">
+      <div>
+        <div class="kpi-value c-yellow">$471</div>
+        <div class="kpi-label">Inversión total en Ads</div>
+      </div>
+      <div class="kpi-sub">Meta $358 · TikTok $112</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Tendencia de inscripciones por mes</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartTendencia"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Gasto por plataforma · Meta vs. TikTok</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartPlatformas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Análisis cruzado: Ads × Inscripciones</div>
+  <div class="grid-3">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-title" style="margin:0">Marzo</div>
+        <span class="badge badge-purple">$162.62 ads</span>
+      </div>
+      <div class="stat-row"><span class="stat-row-label">Inscritos</span><span class="stat-row-value">109</span></div>
+      <div class="stat-row"><span class="stat-row-label">Alcance</span><span class="stat-row-value">45,553</span></div>
+      <div class="stat-row"><span class="stat-row-label">WS nuevos</span><span class="stat-row-value">221</span></div>
+      <div class="stat-row"><span class="stat-row-label">Costo / inscrito</span><span class="stat-row-value c-yellow">$1.49</span></div>
+      <div class="stat-row"><span class="stat-row-label">Costo / WS nuevo</span><span class="stat-row-value">$0.74</span></div>
+      <div style="height:1px;background:var(--border);margin:8px 0"></div>
+      <div class="stat-row"><span class="stat-row-label" style="font-size:11px">Leads Kommo</span><span class="stat-row-value" style="font-size:11px">425</span></div>
+      <div class="stat-row"><span class="stat-row-label" style="font-size:11px">Tasa de cierre CRM</span><span class="stat-row-value c-red" style="font-size:11px">13.2%</span></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-title" style="margin:0">Mayo</div>
+        <span class="badge badge-teal">$104.87 ads</span>
+      </div>
+      <div class="stat-row"><span class="stat-row-label">Inscritos</span><span class="stat-row-value">120</span></div>
+      <div class="stat-row"><span class="stat-row-label">Alcance</span><span class="stat-row-value">17,704</span></div>
+      <div class="stat-row"><span class="stat-row-label">WS nuevos</span><span class="stat-row-value">225</span></div>
+      <div class="stat-row"><span class="stat-row-label">Costo / inscrito</span><span class="stat-row-value c-green">$0.87</span></div>
+      <div class="stat-row"><span class="stat-row-label">Costo / WS nuevo</span><span class="stat-row-value">$0.47</span></div>
+      <div style="height:1px;background:var(--border);margin:8px 0"></div>
+      <div class="stat-row"><span class="stat-row-label" style="font-size:11px">Leads Kommo</span><span class="stat-row-value" style="font-size:11px">104</span></div>
+      <div class="stat-row"><span class="stat-row-label" style="font-size:11px">Pago confirmado CRM</span><span class="stat-row-value c-green" style="font-size:11px">49% ↑</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px">Diferencial Mayo vs. Marzo</div>
+      <div class="stat-row">
+        <span class="stat-row-label">Gasto ads</span>
+        <span class="stat-row-value c-green">-$57.75</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Inscritos</span>
+        <span class="stat-row-value c-green">+11</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Alcance</span>
+        <span class="stat-row-value c-red">-27,849</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Costo/inscrito</span>
+        <span class="stat-row-value c-green">-41%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Costo/WS nuevo</span>
+        <span class="stat-row-value c-green">-36%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Lecturas clave</div>
+
+  <div class="insight">
+    <div class="insight-icon">📈</div>
+    <div class="insight-text"><strong>Mayo fue más eficiente que Marzo con menos presupuesto.</strong> Con $58 menos de inversión, Mayo obtuvo 11 inscritos más y el costo por inscrito cayó de $1.49 a $0.87. La base de contactos ya construida en meses anteriores y el foco en campañas de WhatsApp probablemente explican parte de esto.</div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">🔁</div>
+    <div class="insight-text"><strong>24% de los participantes son recurrentes</strong> (48 personas en 2 o más talleres). Esto es una señal de audiencia fiel que podría capitalizarse mejor con la membresía LP antes o durante cada taller.</div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">⚡</div>
+    <div class="insight-text"><strong>La retención de LP es el principal punto débil.</strong> De 49 miembros históricos, solo 16 (33%) siguen activos. La cohorte de Marzo tuvo la mayor captación (37 miembros) pero también la mayor cantidad de vencidos. Se necesita una estrategia de renovación activa, no pasiva.</div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">🎯</div>
+    <div class="insight-text"><strong>El ciclo de ventas se concentra en los primeros 14 días del mes.</strong> Tanto en Marzo como en Abril, el grueso de inscripciones ocurrió en las dos primeras semanas. Una estrategia de early bird con incentivo real podría suavizar la curva y reducir la presión operativa del cierre.</div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">🔀</div>
+    <div class="insight-text"><strong>La tasa de cierre en Kommo mejoró taller a taller: 13% → 29% → 49%.</strong> Marzo cerró con el 13.2% (56/425 leads), Abril va en 28.9% con 112 leads aún activos, y Mayo ya tiene 49% en "pago confirmado" sin ningún perdido registrado. La tendencia sugiere mejor calificación del lead o mejor proceso de seguimiento. La brecha entre Kommo "ganados" e inscritos totales indica que parte de las inscripciones llegan por canal directo sin pasar por el CRM.</div>
+  </div>
+  <div class="insight">
+    <div class="insight-icon">🏙️</div>
+    <div class="insight-text"><strong>Quito concentra el 37% de inscritos</strong> (de quienes tenemos datos de ciudad). Guayaquil es segundo con 14%. El resto está distribuido en ciudades medianas, lo que refuerza el valor del formato virtual para llegar a Ambato, Cuenca, Riobamba y Portoviejo.</div>
+  </div>
+
+</div>
+
+<!-- =================== INSCRIPCIONES =================== -->
+<div id="tab-inscripciones" class="tab-panel">
+
+  <div class="grid-4">
+    <div class="card kpi">
+      <div><div class="kpi-value c-accent">368</div><div class="kpi-label">Total inscripciones</div></div>
+      <div class="kpi-sub">3 talleres · Mar–May 2026</div>
+    </div>
+    <div class="card kpi">
+      <div><div class="kpi-value">200+</div><div class="kpi-label">Cédulas únicas</div></div>
+      <div class="kpi-sub">Maestro Marzo+Abril+LP</div>
+    </div>
+    <div class="card kpi">
+      <div><div class="kpi-value c-yellow">48</div><div class="kpi-label">Participantes recurrentes</div></div>
+      <div class="kpi-sub">En 2 o más talleres</div>
+    </div>
+    <div class="card kpi">
+      <div><div class="kpi-value c-green">49</div><div class="kpi-label">Miembros LP captados</div></div>
+      <div class="kpi-sub">Acumulado histórico</div>
+    </div>
+  </div>
+
+  <div class="grid-2-1">
+    <div class="card">
+      <div class="card-title">Volumen por mes</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartVolumen"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribución mensual</div>
+      <div style="margin-top:4px">
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Abril</span><span>139 · 38%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:38%;background:var(--accent2)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Mayo</span><span>120 · 33%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:33%;background:var(--accent3)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Marzo</span><span>109 · 30%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:30%;background:var(--accent)"></div></div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="card-title">Modalidad (solo Marzo)</div>
+      <div class="prog-wrap">
+        <div class="prog-label"><span>Virtual</span><span>63 · 58%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:58%;background:var(--accent)"></div></div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-label"><span>Presencial</span><span>46 · 42%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:42%;background:var(--accent2)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Geografía (Marzo + Abril + LP)</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="chartGeo"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Recurrencia de participantes</div>
+      <div style="height:200px;display:flex;align-items:center;justify-content:center">
+        <canvas id="chartRecurrencia"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Ciclo de ventas por semana</div>
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-h">
+      <div class="card-title">Inscripciones por semana del mes (Marzo y Abril)</div>
+      <span class="badge badge-gray">Semana 1 = días 1–7</span>
+    </div>
+    <div class="chart-wrap" style="height:200px">
+      <canvas id="chartCiclo"></canvas>
+    </div>
+    <div style="margin-top:14px;font-size:12px;color:var(--text-muted);line-height:1.6">
+      <strong style="color:var(--text)">Lectura:</strong> En ambos meses, la Semana 2 concentra el pico de inscripciones (54% en Marzo, 45% en Abril). En Abril hay una segunda ola en Sem 4–5 que puede corresponder a inscripciones de último momento antes del cierre. Mayo no tiene datos de formulario pero el patrón histórico sugiere comportamiento similar.
+    </div>
+  </div>
+
+  <div class="section-title">Legalité+ · Membresía</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Estado actual de miembros</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="kpi-dot" style="background:var(--green)"></span>
+          <span style="flex:1;font-size:13px">Activos</span>
+          <span style="font-size:20px;font-weight:700;color:var(--green)">16</span>
+          <span style="font-size:12px;color:var(--text-muted)">33%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="kpi-dot" style="background:var(--red)"></span>
+          <span style="flex:1;font-size:13px">Vencidos</span>
+          <span style="font-size:20px;font-weight:700;color:var(--red)">33</span>
+          <span style="font-size:12px;color:var(--text-muted)">67%</span>
+        </div>
+        <hr class="divider" style="margin:4px 0">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="kpi-dot" style="background:var(--text-muted)"></span>
+          <span style="flex:1;font-size:13px">Total histórico</span>
+          <span style="font-size:20px;font-weight:700">49</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Captación por cohorte</div>
+      <div style="margin-top:8px">
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Marzo 2026</span><span>37 · 76%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:76%;background:var(--accent)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Abril 2026</span><span>10 · 20%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:20%;background:var(--accent2)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Mayo 2026</span><span>2 · 4%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:4%;background:var(--accent3)"></div></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:10px">Marzo fue el mes de mayor captación LP, coincidiendo con la promo early bird a $25.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pagos por miembro</div>
+      <div style="margin-top:8px">
+        <div class="prog-wrap">
+          <div class="prog-label"><span>1 pago ($25)</span><span>46 · 94%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:94%;background:var(--accent)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>2 pagos ($145)</span><span>3 · 6%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:6%;background:var(--green)"></div></div>
+        </div>
+        <hr class="divider" style="margin:10px 0">
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.6">Solo 3 miembros renovaron (2 pagos). El 94% restante no repitió el ciclo; el proceso de renovación necesita atención activa.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- =================== ADS =================== -->
+<div id="tab-ads" class="tab-panel">
+
+  <!-- Resumen ejecutivo combinado -->
+  <div class="grid-4" style="margin-bottom:8px">
+    <div class="card kpi">
+      <div><div class="kpi-value c-yellow">$470.63</div><div class="kpi-label">Gasto total en Ads</div></div>
+      <div class="kpi-sub">Meta $358.84 · TikTok $111.79</div>
+    </div>
+    <div class="card kpi">
+      <div><div class="kpi-value">745k</div><div class="kpi-label">Impresiones combinadas</div></div>
+      <div class="kpi-sub">Meta 391k · TikTok 354k</div>
+    </div>
+    <div class="card kpi">
+      <div><div class="kpi-value c-accent2">446</div><div class="kpi-label">WS nuevos (Meta)</div></div>
+      <div class="kpi-sub">TikTok no reporta leads directos</div>
+    </div>
+    <div class="card kpi">
+      <div><div class="kpi-value c-green">$0.60</div><div class="kpi-label">Costo prom. / WS nuevo</div></div>
+      <div class="kpi-sub">Solo campañas Meta con objetivo WS</div>
+    </div>
+  </div>
+
+  <!-- Plataformas side-by-side -->
+  <div class="grid-2" style="margin-bottom:8px">
+    <div class="card" style="border-left:3px solid #1877f2">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <span style="font-size:16px">📘</span>
+        <span style="font-weight:700;font-size:14px">Meta Ads</span>
+        <span class="badge badge-purple" style="margin-left:auto">$358.84</span>
+      </div>
+      <div class="stat-row"><span class="stat-row-label">Impresiones</span><span class="stat-row-value">391,417</span></div>
+      <div class="stat-row"><span class="stat-row-label">Campañas activas</span><span class="stat-row-value">12</span></div>
+      <div class="stat-row"><span class="stat-row-label">WS nuevos</span><span class="stat-row-value c-accent2">446</span></div>
+      <div class="stat-row"><span class="stat-row-label">Conversiones reportadas</span><span class="stat-row-value">Sí (WS, LP views)</span></div>
+      <div class="stat-row"><span class="stat-row-label">Costo / inscrito (talleres)</span><span class="stat-row-value">$0.87–$1.49</span></div>
+    </div>
+    <div class="card" style="border-left:3px solid #ff0050">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <span style="font-size:16px">🎵</span>
+        <span style="font-weight:700;font-size:14px">TikTok Ads</span>
+        <span class="badge badge-red" style="margin-left:auto">$111.79</span>
+      </div>
+      <div class="stat-row"><span class="stat-row-label">Impresiones</span><span class="stat-row-value">354,437</span></div>
+      <div class="stat-row"><span class="stat-row-label">Campañas activas</span><span class="stat-row-value">3</span></div>
+      <div class="stat-row"><span class="stat-row-label">Clics destino</span><span class="stat-row-value">2,305 (CTR 0.65%)</span></div>
+      <div class="stat-row"><span class="stat-row-label">Conversiones reportadas</span><span class="stat-row-value c-red">No (pixel sin config.)</span></div>
+      <div class="stat-row"><span class="stat-row-label">Costo / inscrito</span><span class="stat-row-value c-muted">No medible</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2-1">
+    <div class="card">
+      <div class="card-title">Gasto por categoría de campaña</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartGastoCat"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Mix de inversión</div>
+      <div style="margin-top:6px">
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Taller Marzo</span><span>$162.62 · 45%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:45%;background:var(--accent)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Taller Mayo</span><span>$104.87 · 29%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:29%;background:var(--accent2)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Boost contenido</span><span>$46.71 · 13%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:13%;background:var(--accent3)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>LP Abril</span><span>$29.87 · 8%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:8%;background:var(--accent4)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Podcast (awareness)</span><span>$14.77 · 4%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:4%;background:var(--text-faint)"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos Meta -->
+  <div class="section-title">📘 Meta Ads · Distribución y eficiencia</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Costo por WS nuevo</div>
+      <div class="chart-wrap" style="height:180px">
+        <canvas id="chartEficienciaWs"></canvas>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:10px">Mayo fue 36% más eficiente en costo por lead de WhatsApp. Mismo volumen de contactos (221 vs 225) con $58 menos de inversión.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Costo por inscrito (gasto ads / inscritos del mes)</div>
+      <div class="chart-wrap" style="height:180px">
+        <canvas id="chartEficienciaInsc"></canvas>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:10px">Atribución aproximada. Los inscritos de Marzo incluyen presenciales que pueden no haber llegado vía ads.</div>
+    </div>
+  </div>
+
+  <div class="section-title">📘 Meta Ads · Detalle por campaña</div>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+    <table>
+      <thead>
+        <tr>
+          <th>Campaña</th>
+          <th>Categoría</th>
+          <th>Objetivo</th>
+          <th style="text-align:right">Gasto</th>
+          <th style="text-align:right">Alcance</th>
+          <th style="text-align:right">WS nuevos</th>
+          <th style="text-align:right">$/resultado</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2026-02-TALLER-WHATSAPP</td>
+          <td><span class="badge badge-purple">Taller Marzo</span></td>
+          <td class="td-muted">WhatsApp conv.</td>
+          <td class="td-mono" style="text-align:right">$125.63</td>
+          <td class="td-mono" style="text-align:right">21,996</td>
+          <td class="td-mono" style="text-align:right">212</td>
+          <td class="td-mono" style="text-align:right">$0.23</td>
+          <td><span class="badge badge-gray">Completada</span></td>
+        </tr>
+        <tr>
+          <td>2026-02-TALLER-CONVERSION</td>
+          <td><span class="badge badge-purple">Taller Marzo</span></td>
+          <td class="td-muted">Conversiones web</td>
+          <td class="td-mono" style="text-align:right">$27.02</td>
+          <td class="td-mono" style="text-align:right">9,231</td>
+          <td class="td-mono" style="text-align:right">9</td>
+          <td class="td-mono" style="text-align:right">$1.29</td>
+          <td><span class="badge badge-gray">Inactiva</span></td>
+        </tr>
+        <tr>
+          <td>VIEWS-LIVE-MARZO-2026</td>
+          <td><span class="badge badge-purple">Taller Marzo</span></td>
+          <td class="td-muted">Video views</td>
+          <td class="td-mono" style="text-align:right">$9.97</td>
+          <td class="td-mono" style="text-align:right">14,326</td>
+          <td class="td-mono" style="text-align:right">—</td>
+          <td class="td-mono" style="text-align:right">$0.001</td>
+          <td><span class="badge badge-gray">Completada</span></td>
+        </tr>
+        <tr>
+          <td>Taller Mayo Whatsapp</td>
+          <td><span class="badge badge-teal">Taller Mayo</span></td>
+          <td class="td-muted">WhatsApp conv.</td>
+          <td class="td-mono" style="text-align:right">$64.93</td>
+          <td class="td-mono" style="text-align:right">11,118</td>
+          <td class="td-mono" style="text-align:right">183</td>
+          <td class="td-mono" style="text-align:right">$0.15</td>
+          <td><span class="badge badge-gray">Inactiva</span></td>
+        </tr>
+        <tr>
+          <td>Taller Mayo Landing</td>
+          <td><span class="badge badge-teal">Taller Mayo</span></td>
+          <td class="td-muted">Conversiones web</td>
+          <td class="td-mono" style="text-align:right">$39.94</td>
+          <td class="td-mono" style="text-align:right">6,586</td>
+          <td class="td-mono" style="text-align:right">42</td>
+          <td class="td-mono" style="text-align:right">$5.71</td>
+          <td><span class="badge badge-yellow">Rec. completada</span></td>
+        </tr>
+        <tr>
+          <td>2026-04-LEGALITE-PLUS</td>
+          <td><span class="badge badge-red">LP Abril</span></td>
+          <td class="td-muted">Landing page views</td>
+          <td class="td-mono" style="text-align:right">$19.95</td>
+          <td class="td-mono" style="text-align:right">12,771</td>
+          <td class="td-mono" style="text-align:right">8</td>
+          <td class="td-mono" style="text-align:right">$0.05</td>
+          <td><span class="badge badge-gray">Completada</span></td>
+        </tr>
+        <tr>
+          <td>2026-04-LIVE-12-ABRIL</td>
+          <td><span class="badge badge-red">LP Abril</span></td>
+          <td class="td-muted">Landing page views</td>
+          <td class="td-mono" style="text-align:right">$9.92</td>
+          <td class="td-mono" style="text-align:right">11,715</td>
+          <td class="td-mono" style="text-align:right">1</td>
+          <td class="td-mono" style="text-align:right">$0.03</td>
+          <td><span class="badge badge-gray">Completada</span></td>
+        </tr>
+        <tr>
+          <td>Publicación: "Cómo impugnar..."</td>
+          <td><span class="badge badge-yellow">Boost Abril</span></td>
+          <td class="td-muted">WhatsApp conv.</td>
+          <td class="td-mono" style="text-align:right">$4.09</td>
+          <td class="td-mono" style="text-align:right">3,311</td>
+          <td class="td-mono" style="text-align:right">10</td>
+          <td class="td-mono" style="text-align:right">$0.22</td>
+          <td><span class="badge badge-gray">Inactiva</span></td>
+        </tr>
+        <tr>
+          <td>Publicación: "Dos abogados..."</td>
+          <td><span class="badge badge-yellow">Boost Abril</span></td>
+          <td class="td-muted">Clics en enlace</td>
+          <td class="td-mono" style="text-align:right">$17.21</td>
+          <td class="td-mono" style="text-align:right">23,122</td>
+          <td class="td-mono" style="text-align:right">5</td>
+          <td class="td-mono" style="text-align:right">$0.01</td>
+          <td><span class="badge badge-gray">Inactiva</span></td>
+        </tr>
+        <tr>
+          <td>Publicación: "Causales nulidad..."</td>
+          <td><span class="badge badge-yellow">Boost Abril</span></td>
+          <td class="td-muted">Clics en enlace</td>
+          <td class="td-mono" style="text-align:right">$11.84</td>
+          <td class="td-mono" style="text-align:right">9,964</td>
+          <td class="td-mono" style="text-align:right">2</td>
+          <td class="td-mono" style="text-align:right">$0.01</td>
+          <td><span class="badge badge-gray">Completada</span></td>
+        </tr>
+        <tr>
+          <td>Publicación: "El contencioso..."</td>
+          <td><span class="badge badge-green">Boost Mayo</span></td>
+          <td class="td-muted">Clics en enlace</td>
+          <td class="td-mono" style="text-align:right">$13.57</td>
+          <td class="td-mono" style="text-align:right">24,671</td>
+          <td class="td-mono" style="text-align:right">3</td>
+          <td class="td-mono" style="text-align:right">$0.01</td>
+          <td><span class="badge badge-gray">Completada</span></td>
+        </tr>
+        <tr>
+          <td>2026-PODCAST</td>
+          <td><span class="badge badge-gray">Siempre activo</span></td>
+          <td class="td-muted">Video views</td>
+          <td class="td-mono" style="text-align:right">$14.77</td>
+          <td class="td-mono" style="text-align:right">31,284</td>
+          <td class="td-mono" style="text-align:right">—</td>
+          <td class="td-mono" style="text-align:right">$0.001</td>
+          <td><span class="badge badge-gray">Inactiva</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TikTok section -->
+  <div class="section-title">🎵 TikTok Ads · Detalle por campaña</div>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">
+    <table>
+      <thead>
+        <tr>
+          <th>Campaña</th>
+          <th>Estado</th>
+          <th style="text-align:right">Gasto</th>
+          <th style="text-align:right">Impresiones</th>
+          <th style="text-align:right">Clics</th>
+          <th style="text-align:right">CTR</th>
+          <th style="text-align:right">CPC</th>
+          <th style="text-align:right">Conversiones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2020-TALLER-WHATSAPP</td>
+          <td><span class="badge badge-gray">No entregando</span></td>
+          <td class="td-mono" style="text-align:right">$59.26</td>
+          <td class="td-mono" style="text-align:right">201,402</td>
+          <td class="td-mono" style="text-align:right">913</td>
+          <td class="td-mono" style="text-align:right">0.45%</td>
+          <td class="td-mono" style="text-align:right">$0.06</td>
+          <td class="td-mono" style="text-align:right;color:var(--text-muted)">—</td>
+        </tr>
+        <tr>
+          <td>2026 PODCAST</td>
+          <td><span class="badge badge-gray">Pausada</span></td>
+          <td class="td-mono" style="text-align:right">$27.04</td>
+          <td class="td-mono" style="text-align:right">101,788</td>
+          <td class="td-mono" style="text-align:right">261</td>
+          <td class="td-mono" style="text-align:right">0.26%</td>
+          <td class="td-mono" style="text-align:right">$0.10</td>
+          <td class="td-mono" style="text-align:right;color:var(--text-muted)">—</td>
+        </tr>
+        <tr>
+          <td>MASTERCLASS TRAFICO</td>
+          <td><span class="badge badge-gray">Pausada</span></td>
+          <td class="td-mono" style="text-align:right">$25.49</td>
+          <td class="td-mono" style="text-align:right">51,247</td>
+          <td class="td-mono" style="text-align:right">1,131</td>
+          <td class="td-mono" style="text-align:right; color:var(--green)">2.21%</td>
+          <td class="td-mono" style="text-align:right">$0.02</td>
+          <td class="td-mono" style="text-align:right;color:var(--text-muted)">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card" style="background:rgba(255,0,80,0.04);border-color:rgba(255,0,80,0.15);margin-bottom:24px">
+    <div class="card-title" style="color:#ff6b8a">Limitación TikTok</div>
+    <div style="color:var(--text-muted);font-size:12px;line-height:1.9">
+      · El píxel de conversión no está configurado; todas las campañas reportan 0 conversiones. Solo sirve como canal de awareness/tráfico por ahora.<br>
+      · MASTERCLASS TRAFICO tuvo el CTR más alto (2.21%) con el CPC más bajo ($0.02), lo que sugiere que el creativo de esa campaña resonó bien con la audiencia de TikTok.<br>
+      · Sin datos de WS ni leads, TikTok no se puede cruzar con inscripciones en este período.
+    </div>
+  </div>
+
+  <div class="card" style="background:rgba(251,191,36,0.05);border-color:rgba(251,191,36,0.2)">
+    <div class="card-title" style="color:var(--yellow)">Notas metodológicas</div>
+    <div style="color:var(--text-muted);font-size:12px;line-height:2">
+      · Los objetivos de campaña son distintos (WA conv., LP views, video views, clics), el "costo por resultado" no es comparable directamente entre categorías.<br>
+      · WS nuevos es el proxy más cercano a "lead nuevo", pero no equivale a inscripción. La tasa de cierre WS, inscrito se conocerá con datos de Kommo.<br>
+      · El alcance de Marzo es mayor porque incluía el componente presencial; Mayo fue 100% virtual con campañas más focalizadas.<br>
+      · Se excluyeron 3 campañas con $0 de gasto en el período (PODCAST inactivo, REEL VIEWS AWARENESSA, MASTERCLASS CONVERSION).
+    </div>
+  </div>
+
+</div>
+
+<!-- =================== FUNNELS =================== -->
+<div id="tab-funnels" class="tab-panel">
+
+  <!-- KPI row: conversión por taller -->
+  <div class="grid-3">
+
+    <div class="card" style="border-top:3px solid var(--accent)">
+      <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Taller Marzo · Cerrado</div>
+      <div style="font-size:36px;font-weight:700;color:var(--accent);line-height:1">13.2%</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px">tasa de cierre</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px">
+        <div class="stat-row"><span class="stat-row-label">Leads totales</span><span class="stat-row-value">425</span></div>
+        <div class="stat-row"><span class="stat-row-label">Cerrados ganados</span><span class="stat-row-value" style="color:var(--green)">56</span></div>
+        <div class="stat-row"><span class="stat-row-label">Cerrados perdidos</span><span class="stat-row-value" style="color:var(--red)">369</span></div>
+        <div class="stat-row"><span class="stat-row-label">En proceso</span><span class="stat-row-value">0</span></div>
+      </div>
+      <div style="margin-top:12px;padding:6px 10px;background:rgba(52,211,153,0.08);border-radius:6px;font-size:11px;color:var(--green)">Pipeline cerrado · datos finales</div>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--accent2)">
+      <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Taller Abril · Activo</div>
+      <div style="font-size:36px;font-weight:700;color:var(--accent2);line-height:1">28.9%</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px">tasa de cierre actual</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px">
+        <div class="stat-row"><span class="stat-row-label">Leads totales</span><span class="stat-row-value">159</span></div>
+        <div class="stat-row"><span class="stat-row-label">Cerrados ganados</span><span class="stat-row-value" style="color:var(--green)">46</span></div>
+        <div class="stat-row"><span class="stat-row-label">Cerrados perdidos</span><span class="stat-row-value" style="color:var(--red)">1</span></div>
+        <div class="stat-row"><span class="stat-row-label">En proceso</span><span class="stat-row-value" style="color:var(--yellow)">112</span></div>
+      </div>
+      <div style="margin-top:12px;padding:6px 10px;background:rgba(251,191,36,0.08);border-radius:6px;font-size:11px;color:var(--yellow)">112 leads aún activos; tasa puede subir</div>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--accent3)">
+      <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Taller Mayo · En curso</div>
+      <div style="font-size:36px;font-weight:700;color:var(--accent3);line-height:1">49.0%</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px">pagos confirmados / total leads</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px">
+        <div class="stat-row"><span class="stat-row-label">Leads totales</span><span class="stat-row-value">104</span></div>
+        <div class="stat-row"><span class="stat-row-label">Pago confirmado</span><span class="stat-row-value" style="color:var(--green)">51</span></div>
+        <div class="stat-row"><span class="stat-row-label">Cerrados perdidos</span><span class="stat-row-value">0</span></div>
+        <div class="stat-row"><span class="stat-row-label">En proceso</span><span class="stat-row-value" style="color:var(--yellow)">53</span></div>
+      </div>
+      <div style="margin-top:12px;padding:6px 10px;background:rgba(251,191,36,0.08);border-radius:6px;font-size:11px;color:var(--yellow)">Pipeline abierto · sin datos finales aún</div>
+    </div>
+
+  </div>
+
+  <!-- Comparativa de conversión + funnel Abril -->
+  <div class="grid-2">
+
+    <div class="card">
+      <div class="card-title">Tasa de cierre por taller</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartConversionTaller"></canvas>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text-faint)">Marzo = pipeline cerrado. Abril y Mayo pueden aumentar con leads activos.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Taller Abril · Distribución de leads por etapa</div>
+      <div style="margin-top:4px;font-size:11px;color:var(--text-faint);margin-bottom:16px">Muestra dónde está cada lead hoy, no el drop-off secuencial</div>
+
+      <!-- Etapas en proceso -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--text-muted)">Contacto inicial</span>
+            <span style="font-size:12px;font-weight:600">1 · 0.6%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:0.6%;height:100%;background:var(--text-faint);border-radius:4px"></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--accent)">Info Enviada</span>
+            <span style="font-size:12px;font-weight:600">53 · 33.3%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:33.3%;height:100%;background:var(--accent);border-radius:4px;opacity:0.7"></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--accent)">Agenda enviada</span>
+            <span style="font-size:12px;font-weight:600">13 · 8.2%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:8.2%;height:100%;background:var(--accent);border-radius:4px;opacity:0.7"></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--accent3)">Toma de decisión</span>
+            <span style="font-size:12px;font-weight:600">30 · 18.9%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:18.9%;height:100%;background:var(--accent3);border-radius:4px;opacity:0.8"></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--accent3)">Pago Solicitado</span>
+            <span style="font-size:12px;font-weight:600">15 · 9.4%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:9.4%;height:100%;background:var(--accent3);border-radius:4px;opacity:0.8"></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--green)">Closed · Won ✓</span>
+            <span style="font-size:12px;font-weight:600;color:var(--green)">46 · 28.9%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:28.9%;height:100%;background:var(--green);border-radius:4px"></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--red)">Closed · Lost ✗</span>
+            <span style="font-size:12px;font-weight:600;color:var(--red)">1 · 0.6%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:0.6%;height:100%;background:var(--red);border-radius:4px"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Funnel Mayo en curso -->
+  <div class="section-title">Taller Mayo · Estado del pipeline (en curso)</div>
+  <div class="card" style="margin-bottom:24px">
+    <div style="display:flex;gap:32px;flex-wrap:wrap">
+
+      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--text-muted)">Contacto inicial</span>
+            <span style="font-size:12px;font-weight:600">9 · 8.7%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:8.7%;height:100%;background:var(--text-faint);border-radius:4px"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--accent)">Info Enviada</span>
+            <span style="font-size:12px;font-weight:600">20 · 19.2%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:19.2%;height:100%;background:var(--accent);border-radius:4px;opacity:0.7"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--accent3)">Tomar decisión</span>
+            <span style="font-size:12px;font-weight:600">14 · 13.5%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:13.5%;height:100%;background:var(--accent3);border-radius:4px;opacity:0.8"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--accent3)">Pago solicitado</span>
+            <span style="font-size:12px;font-weight:600">10 · 9.6%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:9.6%;height:100%;background:var(--accent3);border-radius:4px;opacity:0.8"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;color:var(--green)">Pago confirmado ✓</span>
+            <span style="font-size:12px;font-weight:600;color:var(--green)">51 · 49.0%</span>
+          </div>
+          <div style="height:8px;background:var(--surface2);border-radius:4px">
+            <div style="width:49%;height:100%;background:var(--green);border-radius:4px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:12px;border-left:1px solid var(--border);padding-left:32px">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Proyección si cierra igual que Abril</div>
+        <div>
+          <div style="font-size:11px;color:var(--text-faint)">Leads en proceso</div>
+          <div style="font-size:22px;font-weight:700;color:var(--yellow)">53</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-faint)">Ganados adicionales estimados (28.9%)</div>
+          <div style="font-size:22px;font-weight:700;color:var(--accent2)">+15</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-faint)">Total proyectado</div>
+          <div style="font-size:22px;font-weight:700;color:var(--green)">~66</div>
+        </div>
+        <div style="font-size:11px;color:var(--text-faint);margin-top:4px">Proyección conservadora; el pipeline de Mayo tiene menos "perdidos" registrados que Abril.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Insights y notas metodológicas -->
+  <div class="section-title">Lecturas e interpretaciones</div>
+  <div class="grid-3">
+
+    <div class="card" style="border-left:3px solid var(--green)">
+      <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px">📈 Conversión mejora por taller</div>
+      <div style="font-size:13px;color:var(--text-muted);line-height:1.6">Marzo cerró en 13.2%, Abril va en 28.9% y Mayo ya tiene 49% en "pago confirmado". La tendencia sugiere mejora en la gestión del pipeline o mayor calidad del lead.</div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--accent3)">
+      <div style="font-size:12px;font-weight:600;color:var(--accent3);margin-bottom:8px">⚠️ Marzo: 369 leads perdidos</div>
+      <div style="font-size:13px;color:var(--text-muted);line-height:1.6">El 86.8% de los leads de Marzo se cerraron como perdidos. No hay etapas intermedias registradas; el pipeline fue marcado como cerrado sin granularidad de etapa.</div>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:8px">🔍 Nota metodológica</div>
+      <div style="font-size:13px;color:var(--text-muted);line-height:1.6">Kommo "ganados" no equivale 1:1 a inscritos. Kommo captura leads de WS; algunas inscripciones directas o presenciales pueden no estar en el CRM. Los totales de inscritos son más altos en el maestro.</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+const tooltip = {
+  backgroundColor: '#1a1d27',
+  borderColor: '#2e3248',
+  borderWidth: 1,
+  titleColor: '#e2e8f0',
+  bodyColor: '#8892aa',
+  padding: 10,
+};
+const scaleX = {
+  grid: { color: 'rgba(46,50,72,0.5)' },
+  ticks: { color: '#8892aa', font: { family: FONT, size: 11 } },
+  border: { color: '#2e3248' }
+};
+const scaleY = {
+  grid: { color: 'rgba(46,50,72,0.5)' },
+  ticks: { color: '#8892aa', font: { family: FONT, size: 11 } },
+  border: { color: '#2e3248' }
+};
+
+// Overview: tendencia
+new Chart(document.getElementById('chartTendencia'), {
+  type: 'bar',
+  data: {
+    labels: ['Marzo', 'Abril', 'Mayo'],
+    datasets: [{
+      data: [109, 139, 120],
+      backgroundColor: ['rgba(124,106,247,0.75)','rgba(94,234,212,0.75)','rgba(245,158,11,0.75)'],
+      borderColor: ['#7c6af7','#5eead4','#f59e0b'],
+      borderWidth: 1, borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip },
+    scales: { x: scaleX, y: { ...scaleY, beginAtZero: true } }
+  }
+});
+
+// Overview: plataformas
+new Chart(document.getElementById('chartPlatformas'), {
+  type: 'bar',
+  data: {
+    labels: ['Taller\nMarzo', 'Taller\nMayo', 'Boost\ncontenido', 'LP\nAbril', 'Podcast\nMeta', 'Taller\nWA TT', 'Podcast\nTT', 'Masterclass\nTT'],
+    datasets: [
+      {
+        label: 'Meta',
+        data: [162.62, 104.87, 46.71, 29.87, 14.77, null, null, null],
+        backgroundColor: 'rgba(24,119,242,0.65)',
+        borderColor: '#1877f2',
+        borderWidth: 1, borderRadius: 4,
+      },
+      {
+        label: 'TikTok',
+        data: [null, null, null, null, null, 59.26, 27.04, 25.49],
+        backgroundColor: 'rgba(255,0,80,0.6)',
+        borderColor: '#ff0050',
+        borderWidth: 1, borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, labels: { color: '#8892aa', font: { size: 11, family: FONT }, boxWidth: 10, padding: 14 } },
+      tooltip: { ...tooltip, callbacks: { label: ctx => ' $' + (ctx.raw || 0).toFixed(2) + ' — ' + ctx.dataset.label } }
+    },
+    scales: {
+      x: scaleX,
+      y: { ...scaleY, beginAtZero: true, ticks: { ...scaleY.ticks, callback: v => '$' + v } }
+    }
+  }
+});
+
+// Inscripciones: volumen
+new Chart(document.getElementById('chartVolumen'), {
+  type: 'bar',
+  data: {
+    labels: ['Marzo', 'Abril', 'Mayo'],
+    datasets: [{
+      data: [109, 139, 120],
+      backgroundColor: ['rgba(124,106,247,0.75)','rgba(94,234,212,0.75)','rgba(245,158,11,0.75)'],
+      borderColor: ['#7c6af7','#5eead4','#f59e0b'],
+      borderWidth: 1, borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip },
+    scales: { x: scaleX, y: { ...scaleY, beginAtZero: true } }
+  }
+});
+
+// Geografía
+new Chart(document.getElementById('chartGeo'), {
+  type: 'bar',
+  data: {
+    labels: ['Quito','Guayaquil','Ambato','Cuenca','Riobamba','Portoviejo','Otros'],
+    datasets: [{
+      data: [91, 34, 13, 11, 9, 9, 81],
+      backgroundColor: 'rgba(124,106,247,0.65)',
+      borderColor: '#7c6af7',
+      borderWidth: 1, borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: { legend: { display: false }, tooltip },
+    scales: { x: { ...scaleX, beginAtZero: true }, y: scaleY }
+  }
+});
+
+// Recurrencia donut
+new Chart(document.getElementById('chartRecurrencia'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Primera vez','Recurrentes (2+ talleres)'],
+    datasets: [{
+      data: [152, 48],
+      backgroundColor: ['rgba(46,50,72,0.9)','rgba(94,234,212,0.75)'],
+      borderColor: ['#2e3248','#5eead4'],
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display: true, position: 'bottom', labels: { color: '#8892aa', font: { size: 11, family: FONT }, padding: 12, boxWidth: 10 } },
+      tooltip
+    },
+    cutout: '65%',
+    responsive: true, maintainAspectRatio: false,
+  }
+});
+
+// Ciclo de ventas
+new Chart(document.getElementById('chartCiclo'), {
+  type: 'line',
+  data: {
+    labels: ['Sem 1 (1-7)','Sem 2 (8-14)','Sem 3 (15-21)','Sem 4 (22-28)','Sem 5 (29+)'],
+    datasets: [
+      { label: 'Marzo', data: [26, 59, 5, 18, 1], borderColor: '#7c6af7', backgroundColor: 'rgba(124,106,247,0.1)', tension: 0.3, fill: true, pointBackgroundColor: '#7c6af7', pointRadius: 4 },
+      { label: 'Abril', data: [14, 63, 2, 36, 24], borderColor: '#5eead4', backgroundColor: 'rgba(94,234,212,0.1)', tension: 0.3, fill: true, pointBackgroundColor: '#5eead4', pointRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, labels: { color: '#8892aa', font: { size: 11, family: FONT }, boxWidth: 10, padding: 14 } }, tooltip },
+    scales: { x: scaleX, y: { ...scaleY, beginAtZero: true } }
+  }
+});
+
+// Ads: gasto por categoría
+new Chart(document.getElementById('chartGastoCat'), {
+  type: 'bar',
+  data: {
+    labels: ['Taller Marzo','Taller Mayo','Boost contenido','LP Abril','Podcast'],
+    datasets: [{
+      data: [162.62, 104.87, 46.71, 29.87, 14.77],
+      backgroundColor: ['rgba(124,106,247,0.75)','rgba(94,234,212,0.75)','rgba(245,158,11,0.75)','rgba(244,114,182,0.75)','rgba(100,116,139,0.6)'],
+      borderColor: ['#7c6af7','#5eead4','#f59e0b','#f472b6','#64748b'],
+      borderWidth: 1, borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { ...tooltip, callbacks: { label: ctx => ' $' + ctx.raw.toFixed(2) } } },
+    scales: { x: scaleX, y: { ...scaleY, beginAtZero: true, ticks: { ...scaleY.ticks, callback: v => '$' + v } } }
+  }
+});
+
+// Ads: eficiencia WS
+new Chart(document.getElementById('chartEficienciaWs'), {
+  type: 'bar',
+  data: {
+    labels: ['Marzo','Mayo'],
+    datasets: [{
+      data: [0.74, 0.47],
+      backgroundColor: ['rgba(124,106,247,0.75)','rgba(94,234,212,0.75)'],
+      borderColor: ['#7c6af7','#5eead4'],
+      borderWidth: 1, borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { ...tooltip, callbacks: { label: ctx => ' $' + ctx.raw + ' / WS nuevo' } } },
+    scales: { x: scaleX, y: { ...scaleY, beginAtZero: true, ticks: { ...scaleY.ticks, callback: v => '$' + v } } }
+  }
+});
+
+// Funnels: tasa de conversión por taller
+new Chart(document.getElementById('chartConversionTaller'), {
+  type: 'bar',
+  data: {
+    labels: ['Marzo\n(cerrado)', 'Abril\n(activo)', 'Mayo\n(en curso)'],
+    datasets: [{
+      data: [13.2, 28.9, 49.0],
+      backgroundColor: ['rgba(124,106,247,0.75)','rgba(94,234,212,0.75)','rgba(245,158,11,0.75)'],
+      borderColor: ['#7c6af7','#5eead4','#f59e0b'],
+      borderWidth: 1, borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltip, callbacks: { label: ctx => ' ' + ctx.raw + '% tasa de cierre' } }
+    },
+    scales: {
+      x: scaleX,
+      y: { ...scaleY, beginAtZero: true, max: 60, ticks: { ...scaleY.ticks, callback: v => v + '%' } }
+    }
+  }
+});
+
+// Ads: eficiencia inscrito
+new Chart(document.getElementById('chartEficienciaInsc'), {
+  type: 'bar',
+  data: {
+    labels: ['Marzo','Mayo'],
+    datasets: [{
+      data: [1.49, 0.87],
+      backgroundColor: ['rgba(124,106,247,0.75)','rgba(94,234,212,0.75)'],
+      borderColor: ['#7c6af7','#5eead4'],
+      borderWidth: 1, borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { ...tooltip, callbacks: { label: ctx => ' $' + ctx.raw + ' / inscrito' } } },
+    scales: { x: scaleX, y: { ...scaleY, beginAtZero: true, ticks: { ...scaleY.ticks, callback: v => '$' + v } } }
+  }
+});
+</script>
+</body>
+</html>
