@@ -11,6 +11,12 @@ export default function CycleEditor({ templateId, tasksByPhase }: { templateId: 
   const router = useRouter()
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [saving, setSaving] = useState(false)
+  const [filterPerson, setFilterPerson] = useState<string | null>(null)
+
+  const filteredGroups = tasksByPhase.map((group) => ({
+    ...group,
+    tasks: filterPerson ? group.tasks.filter((t) => t.owners.includes(filterPerson)) : group.tasks,
+  })).filter((group) => group.tasks.length > 0)
 
   async function handleSave(task: Task, patch: Partial<Task>) {
     setSaving(true)
@@ -32,7 +38,25 @@ export default function CycleEditor({ templateId, tasksByPhase }: { templateId: 
 
   return (
     <div className="space-y-8">
-      {tasksByPhase.map((group) => (
+      <div className="flex gap-2 flex-wrap">
+        <button
+          onClick={() => setFilterPerson(null)}
+          className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${filterPerson === null ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'}`}
+        >
+          Todos
+        </button>
+        {PERSONS.map((p) => (
+          <button
+            key={p}
+            onClick={() => setFilterPerson(filterPerson === p ? null : p)}
+            className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${filterPerson === p ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'}`}
+          >
+            {PERSON_LABELS[p]}
+          </button>
+        ))}
+      </div>
+
+      {filteredGroups.map((group) => (
         <div key={group.phase}>
           <div className="flex items-center gap-3 mb-3">
             <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{group.label}</h2>
