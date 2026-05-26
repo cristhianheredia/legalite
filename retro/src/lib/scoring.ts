@@ -1,4 +1,5 @@
 import type { RetroItem, Task, Phase } from '@prisma/client'
+import { PHASE_ORDER } from './constants'
 
 type ItemWithTask = RetroItem & { task: Task }
 
@@ -19,7 +20,7 @@ export function effectivenessScore(items: ItemWithTask[]): number {
 export function phaseScores(
   items: ItemWithTask[],
 ): Record<Phase, { execution: number; effectiveness: number; total: number; done: number }> {
-  const phases: Phase[] = ['PREP', 'WARM', 'CLOSE', 'EXEC', 'POST']
+  const phases: Phase[] = PHASE_ORDER
   const result = {} as Record<Phase, { execution: number; effectiveness: number; total: number; done: number }>
 
   for (const phase of phases) {
