@@ -9,6 +9,7 @@ const tasks: {
   owners: string[]
   weight: Weight
   order: number
+  archived?: boolean
 }[] = [
   // PREPARACIÓN
   {
@@ -69,7 +70,7 @@ const tasks: {
   },
   {
     title: 'Grabación de todos los reels del ciclo',
-    description: 'Sesión única de grabación de todos los reels: lanzamiento, Early Bird, retargeting y últimos cupos.',
+    description: 'Sesión única de grabación de todos los reels: lanzamiento, Early Bird, retargeting y últimos cupos. Incluir reel de promoción del LIVE gratuito.',
     phase: 'PREP',
     owners: ['cristhian'],
     weight: 'HIGH',
@@ -83,6 +84,14 @@ const tasks: {
     weight: 'MEDIUM',
     order: 9,
   },
+  {
+    title: 'Material del taller publicado en Circle — Semana 1',
+    description: 'Publicar el material del taller (workbook, recursos) en Circle desde la primera semana como valor agregado para inscritos tempranos y para incentivar la inscripción anticipada.',
+    phase: 'PREP',
+    owners: ['cristhian'],
+    weight: 'MEDIUM',
+    order: 10,
+  },
   // CALENTAMIENTO
   {
     title: 'Anuncio principal del taller activo — Meta Ads',
@@ -90,7 +99,7 @@ const tasks: {
     phase: 'WARM',
     owners: ['sandra'],
     weight: 'HIGH',
-    order: 10,
+    order: 11,
   },
   {
     title: 'Reel orgánico semanal',
@@ -98,7 +107,7 @@ const tasks: {
     phase: 'WARM',
     owners: ['cristhian'],
     weight: 'MEDIUM',
-    order: 11,
+    order: 12,
   },
   {
     title: 'Testimonio o caso real relacionado al tema',
@@ -106,7 +115,8 @@ const tasks: {
     phase: 'WARM',
     owners: ['cristhian'],
     weight: 'LOW',
-    order: 12,
+    order: 13,
+    archived: true,
   },
   {
     title: 'Reel Early Bird / Clase Bonus',
@@ -114,7 +124,7 @@ const tasks: {
     phase: 'WARM',
     owners: ['cristhian'],
     weight: 'MEDIUM',
-    order: 13,
+    order: 14,
   },
   {
     title: 'Anuncio Early Bird activo — Meta Ads',
@@ -122,7 +132,7 @@ const tasks: {
     phase: 'WARM',
     owners: ['sandra'],
     weight: 'HIGH',
-    order: 14,
+    order: 15,
   },
   {
     title: 'Push pipeline Kommo — "falta una semana para la clase bonus"',
@@ -130,7 +140,7 @@ const tasks: {
     phase: 'WARM',
     owners: ['sahian'],
     weight: 'MEDIUM',
-    order: 15,
+    order: 16,
   },
   {
     title: 'Pregunta o encuesta interactiva — tema jurídico',
@@ -138,7 +148,7 @@ const tasks: {
     phase: 'WARM',
     owners: ['cristhian'],
     weight: 'LOW',
-    order: 16,
+    order: 17,
   },
   {
     title: 'Envío de material Clase Bonus a inscritos',
@@ -146,7 +156,15 @@ const tasks: {
     phase: 'WARM',
     owners: ['cristhian'],
     weight: 'MEDIUM',
-    order: 17,
+    order: 18,
+  },
+  {
+    title: 'LIVE exclusivo para miembros L+ — cierre oferta L+70',
+    description: 'Dictar un LIVE exclusivo para miembros L+ el domingo de la Semana 2 como cierre y último empuje de la oferta L+70 antes de que expire.',
+    phase: 'WARM',
+    owners: ['andres'],
+    weight: 'HIGH',
+    order: 19,
   },
   // CIERRE Y URGENCIA
   {
@@ -155,7 +173,7 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['cristhian'],
     weight: 'HIGH',
-    order: 18,
+    order: 20,
   },
   {
     title: 'Reel de urgencia — últimas horas para la clase bonus',
@@ -163,7 +181,7 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['cristhian'],
     weight: 'MEDIUM',
-    order: 19,
+    order: 21,
   },
   {
     title: 'Push Kommo — "hasta hoy puedes acceder a la clase bonus"',
@@ -171,7 +189,7 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['sahian'],
     weight: 'HIGH',
-    order: 20,
+    order: 22,
   },
   {
     title: 'Clase Bonus en vivo — Zoom',
@@ -179,7 +197,7 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['andres'],
     weight: 'HIGH',
-    order: 21,
+    order: 23,
   },
   {
     title: 'Anuncio del LIVE gratuito — Email Brevo',
@@ -187,15 +205,47 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['cristhian'],
     weight: 'MEDIUM',
-    order: 22,
+    order: 24,
   },
   {
     title: 'LIVE gratuito mensual — YouTube / TikTok',
-    description: 'Dictar el LIVE gratuito mensual en YouTube y TikTok vía Streamyard. Mantiene momentum y promueve el taller.',
+    description: 'Dictar el LIVE gratuito mensual en YouTube y TikTok vía Streamyard. El domingo de la Semana 4 (una semana antes del taller). Mantiene momentum y promueve el taller.',
     phase: 'CLOSE',
     owners: ['andres'],
     weight: 'HIGH',
-    order: 23,
+    order: 25,
+  },
+  {
+    title: 'Reel LIVE en Instagram + flujo ManyChat',
+    description: 'Publicar el reel del LIVE gratuito en Instagram y conectar flujo ManyChat para enviar el link de registro automáticamente por DM a quienes comenten o reaccionen.',
+    phase: 'CLOSE',
+    owners: ['cristhian'],
+    weight: 'HIGH',
+    order: 26,
+  },
+  {
+    title: 'Video LIVE en TikTok',
+    description: 'Publicar el video del LIVE gratuito en TikTok (sin automatización de DM por ahora).',
+    phase: 'CLOSE',
+    owners: ['cristhian'],
+    weight: 'MEDIUM',
+    order: 27,
+  },
+  {
+    title: 'Pautar reel LIVE en Meta Ads',
+    description: 'Activar pauta del reel del LIVE gratuito en Meta Ads para ampliar el alcance más allá de la audiencia orgánica.',
+    phase: 'CLOSE',
+    owners: ['sandra'],
+    weight: 'MEDIUM',
+    order: 28,
+  },
+  {
+    title: 'Pautar video LIVE en TikTok Ads',
+    description: 'Activar pauta del video del LIVE gratuito en TikTok Ads.',
+    phase: 'CLOSE',
+    owners: ['sandra'],
+    weight: 'MEDIUM',
+    order: 29,
   },
   {
     title: 'Retargeting activo — Meta Ads',
@@ -203,7 +253,7 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['sandra'],
     weight: 'HIGH',
-    order: 24,
+    order: 30,
   },
   {
     title: 'Últimos cupos activo — Meta Ads',
@@ -211,7 +261,7 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['sandra'],
     weight: 'HIGH',
-    order: 25,
+    order: 31,
   },
   {
     title: 'Email último llamado (Brevo)',
@@ -219,7 +269,7 @@ const tasks: {
     phase: 'CLOSE',
     owners: ['cristhian'],
     weight: 'HIGH',
-    order: 26,
+    order: 32,
   },
   // EJECUCIÓN
   {
@@ -228,7 +278,15 @@ const tasks: {
     phase: 'EXEC',
     owners: ['cristhian', 'sahian'],
     weight: 'HIGH',
-    order: 27,
+    order: 33,
+  },
+  {
+    title: 'Verificar copy de ads Meta/TikTok — confirmar fechas',
+    description: 'Revisar que el copy de los anuncios activos en Meta y TikTok tenga las fechas correctas del taller. Coordinar con Sandra antes del día de inicio.',
+    phase: 'EXEC',
+    owners: ['cristhian', 'sandra'],
+    weight: 'MEDIUM',
+    order: 34,
   },
   {
     title: 'Sesión 1 del taller en vivo — Zoom',
@@ -236,32 +294,40 @@ const tasks: {
     phase: 'EXEC',
     owners: ['andres'],
     weight: 'HIGH',
-    order: 28,
+    order: 35,
   },
   {
     title: 'Micro campaña Kommo — Post Sesión 1',
-    description: 'Activar micro campaña en Kommo para reactivar leads calientes tras la primera sesión.',
+    description: 'Activar micro campaña en Kommo para reactivar leads calientes tras la primera sesión. Publicar materiales de la sesión en Circle y enviar al grupo de WhatsApp de inscritos.',
     phase: 'EXEC',
     owners: ['sahian'],
     weight: 'MEDIUM',
-    order: 29,
+    order: 36,
+  },
+  {
+    title: 'Contenido orgánico de último llamado en RRSS',
+    description: 'Publicar contenido orgánico de último llamado en Instagram y TikTok el día antes o el día del taller para cerrar inscritos de último momento.',
+    phase: 'EXEC',
+    owners: ['cristhian'],
+    weight: 'LOW',
+    order: 37,
   },
   {
     title: 'Sesión 2 del taller en vivo — Zoom',
-    description: 'Dictar la Sesión 2 del taller. Publicar clip/foto al finalizar para redes sociales.',
+    description: 'Dictar la Sesión 2 del taller. Publicar clip/foto al finalizar para redes sociales como proof del taller.',
     phase: 'EXEC',
     owners: ['andres'],
     weight: 'HIGH',
-    order: 30,
+    order: 38,
   },
   // POST-TALLER
   {
     title: 'Grabaciones publicadas en Circle + Certificados digitales',
-    description: 'Publicar las grabaciones de ambas sesiones en Circle y enviar los certificados digitales a todos los inscritos.',
+    description: 'Publicar las grabaciones de ambas sesiones en Circle. Generar los certificados/diplomas con la herramienta automática y enviarlos a todos los inscritos.',
     phase: 'POST',
     owners: ['cristhian'],
     weight: 'HIGH',
-    order: 31,
+    order: 39,
   },
   {
     title: 'Email post-taller (Brevo)',
@@ -269,15 +335,31 @@ const tasks: {
     phase: 'POST',
     owners: ['cristhian'],
     weight: 'HIGH',
-    order: 32,
+    order: 40,
   },
   {
-    title: 'Upsell Legalité+ / Inicio ciclo siguiente taller',
-    description: 'Iniciar el próximo ciclo con la base de compradores activos. Promover Legalité+ y el siguiente taller.',
+    title: 'WhatsApp inscritos — grabaciones disponibles + oferta L+',
+    description: 'Enviar mensaje al grupo de WhatsApp de inscritos informando que las grabaciones ya están disponibles en Circle y promoviendo la oferta L+ o el siguiente taller.',
+    phase: 'POST',
+    owners: ['cristhian'],
+    weight: 'HIGH',
+    order: 41,
+  },
+  {
+    title: 'Oferta L+70 — presentación en vivo post-taller',
+    description: 'Al cerrar el taller (última sesión), presentar en vivo la oferta L+70: $70 en vez de $120, incluye L+ + próximos 2 talleres, válida por 1 semana. Este es el arranque del siguiente ciclo.',
     phase: 'POST',
     owners: ['andres', 'cristhian'],
     weight: 'HIGH',
-    order: 33,
+    order: 42,
+  },
+  {
+    title: 'Presentación del siguiente taller + oferta L+70',
+    description: 'Arrancar el nuevo ciclo: presentar el siguiente taller a la base de compradores activos y lanzar la oferta L+70 ($70 en vez de $120, incluye L+ + próximos 2 talleres, válida 1 semana).',
+    phase: 'POST',
+    owners: ['andres', 'cristhian'],
+    weight: 'HIGH',
+    order: 43,
   },
 ]
 
