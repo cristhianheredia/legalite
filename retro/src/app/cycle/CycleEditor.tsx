@@ -7,28 +7,28 @@ import { PHASE_LABELS, PERSON_LABELS, PERSONS } from '@/lib/constants'
 type TaskGroup = { phase: Phase; label: string; tasks: Task[] }
 
 const OWNER_COLORS: Record<string, string> = {
-  cristhian: 'bg-indigo-100 text-indigo-700',
-  andres:    'bg-violet-100 text-violet-700',
-  sahian:    'bg-teal-100 text-teal-700',
-  sandra:    'bg-rose-100 text-rose-700',
+  cristhian: 'bg-purple-50 text-purple-600',
+  andres:    'bg-sky-50 text-sky-600',
+  sahian:    'bg-teal-50 text-teal-600',
+  sandra:    'bg-fuchsia-50 text-fuchsia-600',
 }
 
 function getCategory(title: string): { label: string; color: string } {
   const t = title.toLowerCase()
   if (t.includes('ads') || t.includes('pautar') || t.includes('retargeting activo') || t.includes('anuncio principal') || t.includes('anuncio early') || t.includes('últimos cupos activo'))
-    return { label: 'Ads', color: 'bg-purple-50 text-purple-600' }
+    return { label: 'Ads', color: 'bg-indigo-100 text-indigo-700' }
   if (t.includes('email') || t.includes('brevo') || t.includes('sendfox'))
-    return { label: 'Email', color: 'bg-sky-50 text-sky-600' }
+    return { label: 'Email', color: 'bg-violet-100 text-violet-700' }
   if (t.includes('kommo'))
-    return { label: 'CRM', color: 'bg-cyan-50 text-cyan-600' }
+    return { label: 'CRM', color: 'bg-teal-100 text-teal-700' }
   if (t.includes('reel') || t.includes('historia') || t.includes('orgánico') || t.includes('video live') || t.includes('artworks'))
-    return { label: 'Content', color: 'bg-orange-50 text-orange-600' }
+    return { label: 'Content', color: 'bg-rose-100 text-rose-700' }
   if (t.includes('live') || t.includes('zoom') || t.includes('sesión') || t.includes('clase bonus en vivo') || t.includes('streamyard'))
-    return { label: 'Live', color: 'bg-fuchsia-50 text-fuchsia-600' }
+    return { label: 'Live', color: 'bg-orange-100 text-orange-700' }
   if (t.includes('circle'))
-    return { label: 'Circle', color: 'bg-emerald-50 text-emerald-600' }
+    return { label: 'Circle', color: 'bg-emerald-100 text-emerald-700' }
   if (t.includes('whatsapp'))
-    return { label: 'WhatsApp', color: 'bg-lime-50 text-lime-600' }
+    return { label: 'WhatsApp', color: 'bg-lime-100 text-lime-700' }
   return { label: 'Ops', color: 'bg-slate-100 text-slate-500' }
 }
 
