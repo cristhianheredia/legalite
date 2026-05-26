@@ -72,21 +72,25 @@ export default function CycleEditor({ tasksByPhase }: { templateId: string; task
             {group.tasks.map((task) => {
               const cat = getCategory(task.title)
               return (
-                <div key={task.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-gray-300 transition-colors">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="font-medium text-gray-900 text-sm">{task.title}</p>
-                    <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${cat.color}`}>
-                      {cat.label}
-                    </span>
+                <div key={task.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-gray-300 transition-colors flex items-center gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-medium text-gray-900 text-sm">{task.title}</p>
+                      <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${cat.color}`}>
+                        {cat.label}
+                      </span>
+                    </div>
+                    {task.description && (
+                      <p className="text-xs text-gray-400 mt-1 truncate">{task.description}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-1 shrink-0">
                     {task.owners.map((o) => (
                       <span key={o} className={`text-xs px-1.5 py-0.5 rounded font-medium ${OWNER_COLORS[o] ?? 'bg-gray-100 text-gray-600'}`}>
                         {PERSON_LABELS[o as keyof typeof PERSON_LABELS] ?? o}
                       </span>
                     ))}
                   </div>
-                  {task.description && (
-                    <p className="text-xs text-gray-400 mt-1 truncate">{task.description}</p>
-                  )}
                 </div>
               )
             })}
