@@ -18,14 +18,15 @@ export const PERSON_INITIALS: Record<Person, string> = {
 }
 
 export const PHASE_LABELS: Record<Phase, string> = {
-  PREP: 'Preparación',
-  WARM: 'Calentamiento',
-  CLOSE: 'Cierre y Urgencia',
-  EXEC: 'Ejecución',
-  POST: 'Post-Taller',
+  PREP:     'Semana 1 — Lanzamiento',
+  WARM:     'Semana 2 — Early Bird',
+  CLOSE:    'Semana 3 — Clase Bonus',
+  RETARGET: 'Semana 4 — Retargeting + LIVE',
+  EXEC:     'Semana 5 — Taller en vivo',
+  POST:     'Semana 6 — Post-taller',
 }
 
-export const PHASE_ORDER: Phase[] = ['PREP', 'WARM', 'CLOSE', 'EXEC', 'POST']
+export const PHASE_ORDER: Phase[] = ['PREP', 'WARM', 'CLOSE', 'RETARGET', 'EXEC', 'POST']
 
 export const WEIGHT_LABELS: Record<Weight, string> = {
   HIGH: 'Alta',
